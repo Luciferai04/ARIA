@@ -1,7 +1,7 @@
 <div align="center">
   <img src="data/raw/screenshot_clean_ui.png" alt="ARIA UI" width="600" />
 
-  # 🌐 ARIA
+  # ARIA
   **Agentic Research Intelligence Assistant**
   
   [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
@@ -14,7 +14,7 @@
 
 ---
 
-## 🚀 1-Click Zero-Config Installation
+## 1-Click Zero-Config Installation
 
 The absolute fastest way to get ARIA running flawlessly on your machine without manually setting up virtual environments, python dependencies, or typing multiple commands. 
 
@@ -27,19 +27,19 @@ npx github:Luciferai04/ARIA
 *Note: If published to NPM, you can alternatively run `npx aria-assistant`.*
 
 **What does this 1-line command do?**
-1. 📦 Clones the repository autonomously.
-2. 🐍 Scaffolds a pristine Python virtual environment natively (`.venv`).
-3. 📥 Installs all python dependencies silently.
-4. 🎉 Launches the fully functional Streamlit application locally in your browser!
+1. Clones the repository autonomously.
+2. Scaffolds a pristine Python virtual environment natively (`.venv`).
+3. Installs all python dependencies silently.
+4. Launches the fully functional Streamlit application locally in your browser!
 
 ---
 
-## 💻 Manual Installation (Fallback)
+## Manual Installation (Fallback)
 If you prefer a traditional pythonic installation:
 
 1. **Clone the Repo:**
    ```bash
-   git clone https://github.com/soumyajitghosh/ARIA.git
+   git clone https://github.com/Luciferai04/ARIA.git
    cd ARIA
    ```
 2. **Setup Virtual Environment:**
@@ -58,7 +58,7 @@ If you prefer a traditional pythonic installation:
 
 ---
 
-## 🔑 Configuration (.env)
+## Configuration (.env)
 You must place your respective API keys inside the root folder prior to running live web-searches and LLM parsing. An `.env.example` has been provided. 
 
 ```env
@@ -68,7 +68,7 @@ GOOGLE_API_KEY=your_gemini_flash_key_here
 
 ---
 
-## 🧠 System Architecture Overview
+## System Architecture Overview
 Unlike simple verbatim RAG bots handling similarity metrics weakly, ARIA orchestrates a massive 9-node structural workflow resolving the major hallucination discrepancies.
 
 ```mermaid
@@ -94,7 +94,7 @@ graph TD
     S --> UI_OUT
 ```
 
-## 🛠 Features Included
+## Features Included
 - **Cross-Encoder Reranking Platform:** Prevents chunk drift natively.
 - **Dynamic Faithfulness Gates:** Halts invalid factual claims directly via the RAGAS framework evaluators recursively.
 - **Multi-Route Analysis:** Dynamically decides between `WebSearch`, `arXiv Database`, `Local ChromaDB Vectors`, or hybrid variations flawlessly depending on the mathematical distance equations.
@@ -102,5 +102,5 @@ graph TD
 **Document Source Architecture:**
 All baseline academic PDFs loaded directly via the interface are natively tokenized recursively via `all-MiniLM-L6-v2` bindings avoiding expensive third party vector overhead!
 
-### 📝 Final Note
+### Final Note
 If you upload this fully integrated project wrapper as-is, any technical contributor can run instances seamlessly. For issues or missing files natively within execution nodes, trace the terminal logs.
