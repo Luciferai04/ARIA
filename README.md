@@ -22,7 +22,7 @@ Just make sure you have `Node/npm` and `Python3` installed on your machine.
 
 **Run the following command anywhere in your terminal:**
 ```bash
-npx github:soumyajitghosh/ARIA
+npx github:Luciferai04/ARIA
 ```
 *Note: If published to NPM, you can alternatively run `npx aria-assistant`.*
 
