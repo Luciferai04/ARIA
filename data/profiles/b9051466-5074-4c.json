@@ -1,0 +1,17 @@
+{
+  "user_id": "b9051466-5074-4c",
+  "session_count": 2,
+  "topics_researched": [
+    "Comparison of 2024 LLM models with previous models",
+    "What are the relative advantages and disadvantages of using RAG versus Fine-tuni",
+    "List of LLM models released on ArXiv in 2024",
+    "Key features and improvements of 2024 LLM releases",
+    "How do RAG and Fine-tuning approaches compare in terms of training requirements ",
+    "What are the key differences between RAG and Fine-tuning in terms of model archi"
+  ],
+  "last_active": "2026-04-15T22:43:18.330261",
+  "preferred_domains": [
+    "{ \"summary\": RAG and Fine-tuning",
+    "{ \"summary\": The research timeline"
+  ]
+}

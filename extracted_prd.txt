@@ -1,0 +1,761 @@
+ARIA
+Agentic Research Intelligence Assistant
+Technical Product Requirements Document
+v1.0
+KIIT University · B.Tech CS Capstone
+April 2026
+Author: Soumyajit Ghosh
+KIIT University · 9.54 GPA
+NLP Research · IIT Bombay
+Domain
+Agentic AI / LLM Systems
+Capstone Type
+LangGraph + RAG + Agentic Orchestration
+Primary Stack
+Python · LangGraph · ChromaDB · Streamlit
+Deployment Target
+Streamlit Cloud / HuggingFace Spaces
+Difficulty
+Medium-Hard (extends base curriculum)
+Timeline
+4–5 weeks build + 1 week polish
+01 Abstract
+ARIA (Agentic Research Intelligence Assistant) is a fully autonomous, multi-node LangGraph agent designed to
+transform how researchers and founders consume technical literature. A user states a research question in plain
+language; ARIA autonomously plans a multi-step investigation, decomposes it into sub-queries, retrieves grounded
+context from a ChromaDB knowledge base, executes live web and arXiv searches in parallel, synthesises a
+structured report, evaluates its own faithfulness via a self-reflection gate, and iterates if quality falls below threshold
+— all within a stateful, multi-turn conversation session.
+The project satisfies all six mandatory capstone capabilities prescribed by the course (LangGraph Workflow, RAG
+Knowledge Base, Conversation Memory, Self-Reflection, Tool Use, and Deployment) and extends them through a
+
+
+---PAGE BREAK---
+
+Plan-Execute orchestration pattern, a domain-specific arXiv tool, and a citation-aware Streamlit report UI.
+Table of Contents
+01
+Abstract
+02
+Problem Statement & Motivation
+03
+Project Goals & Success Criteria
+04
+System Architecture Overview
+05
+LangGraph State Design
+06
+Node Specifications
+07
+RAG Knowledge Base Design
+08
+Tool Registry
+09
+Self-Reflection & Faithfulness Gate
+10
+Conversation Memory Design
+11
+Streamlit Deployment
+12
+Tech Stack & Dependencies
+13
+Mandatory Capability Compliance Matrix
+14
+Implementation Roadmap
+15
+File Structure
+16
+Risk Register
+
+
+---PAGE BREAK---
+
+02 Problem Statement & Motivation
+The volume of AI/ML literature has grown at an exponential rate since 2020. Researchers, students, and startup
+founders face three compounding problems:
+Information Overload
+arXiv alone publishes 500+ ML papers per day. Manual triage is impossible at this velocity. Founders and
+researchers spend 40–60% of their research time on literature discovery rather than synthesis.
+Grounding Gap
+Existing LLM chatbots hallucinate citations and fabricate paper titles. Without a retrieval-grounded architecture,
+AI-assisted research cannot be trusted for academic or investment decision-making.
+Context Fragmentation
+Each research query starts from scratch. There is no system that maintains session context, remembers prior
+findings, and allows iterative drill-down — the way a human research assistant would.
+Why this matters for the author: Soumyajit Ghosh is simultaneously managing two research papers under
+review, an ISRO quantum-ML collaboration (AGEIS), and a deep-tech startup (SynthDoc). ARIA is not a
+hypothetical tool — it directly accelerates real work and demonstrates the author's capacity to build
+production-grade agentic systems.
+03 Project Goals & Success Criteria
+#
+Goal
+Success Criterion
+Priority
+G1
+Autonomous research planning
+Agent decomposes any question into 3–5 sub-queries without user interventio
+P0
+G2
+Grounded answers only
+100% of answers cite at least one ChromaDB or arXiv source
+P0
+G3
+Self-correcting quality gate
+Faithfulness score gates all answers; retries triggered when score < 0.7
+P0
+G4
+Multi-turn memory
+Agent correctly references facts from 3+ prior turns in the same session
+P0
+G5
+Live web + arXiv retrieval
+arXiv tool returns real paper metadata; DuckDuckGo returns live snippets
+P1
+G6
+Non-technical deployment
+Any user can run a full research query via Streamlit without touching code
+P0
+G7
+Structured report output
+Every answer is formatted as: Summary | Key Findings | Sources | Follow-ups
+P1
+G8
+Domain configurability
+ChromaDB knowledge base is swappable by domain via config.yamlP2
+
+
+---PAGE BREAK---
+
+04 System Architecture Overview
+ARIA implements a Plan-Execute-Reflect-Synthesise (PERS) agentic pattern on top of LangGraph's StateGraph
+API. Unlike simple RAG chains, the architecture has a planning phase that decomposes queries before any
+retrieval occurs, enabling parallel sub-query execution and genuinely multi-source synthesis.
+USER INPUT
+Plain-language research question via Streamlit UI
+M
+memory_node
+Append turn to conversation history, apply sliding window (k=10)
+M
+planner_node
+Decompose question → 3–5 sub-queries (LLM + structured output)
+M  M  M  (parallel branches)
+retrieve_node
+ChromaDB semantic search — top-k=5 per sub-query
+tool_node
+arXiv API + DuckDuckGo web search — live results
+M  merge results
+answer_node
+LLM synthesises grounded answer from all retrieved context
+M
+eval_node
+Faithfulness gate — score retrieved vs. answer overlap
+M FAIL (score<0.7) → reflect_node → answer_node (max 2 retries)
+M PASS
+save_node
+Persist answer + sources to memory state
+M
+STREAMLIT UI
+Render structured report: Summary | Findings | Sources | Follow-ups
+Key Architectural Decision: Plan-Execute Pattern
+Unlike simple router → retrieve → answer chains, ARIA inserts a planner_node that uses structured LLM output
+to decompose queries before touching any retrieval. This enables parallel sub-query execution, dramatically
+improves coverage on complex questions, and is the single biggest differentiator vs. other student projects in this
+cohort.
+
+
+---PAGE BREAK---
+
+05 LangGraph State Design
+The TypedDict State is the contract between all nodes. It must be designed before any node is written. Every field
+that a node reads or writes must appear here.
+# aria/state.py
+from typing import TypedDict, List, Optional, Annotated
+import operator
+class ARIAState(TypedDict):
+    # II Input IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    question:        str                    # current user question
+    thread_id:       str                    # conversation session ID
+    
+    # II Planning IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    sub_queries:     List[str]              # planner decomposition
+    route:           str                    # 'retrieve' | 'tool' | 'both'
+    
+    # II Retrieval IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    retrieved:       str                    # ChromaDB context chunks
+    sources:         List[str]              # source document names
+    tool_result:     str                    # arXiv + web search results
+    
+    # II Generation IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    answer:          str                    # synthesised LLM response
+    report:          dict                   # structured report sections
+    
+    # II Evaluation IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    faithfulness:    float                  # quality score 0.0–1.0
+    eval_retries:    int                    # safety valve counter
+    reflection_note: str                    # critique from reflect_node
+    
+    # II Memory IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    messages:        Annotated[List[dict], operator.add]  # full history
+    context_window:  List[dict]             # sliding window (last k=10)
+Field
+Type
+Owner Node(s)
+Purpose
+question
+str
+entry / memory_node
+User's current input
+thread_id
+str
+entry
+Session identifier for MemorySaver
+sub_queries
+List[str]
+planner_node
+Decomposed sub-questions
+route
+str
+planner_node
+Routing decision for parallel branch
+retrieved
+str
+retrieve_node
+ChromaDB concatenated chunks
+sources
+List[str]
+retrieve_node
+Provenance list for citation
+tool_result
+str
+tool_node
+arXiv + web concatenated results
+answer
+str
+answer_node / reflect_node
+Current best answer
+report
+dict
+answer_node
+Structured sections dict
+faithfulness
+float
+eval_node
+Grounding quality 0–1
+eval_retries
+int
+eval_node
+Max=2 before force-pass
+
+
+---PAGE BREAK---
+
+reflection_note
+str
+reflect_node
+Critique for re-generation
+messages
+List[dict]
+memory_node / save_node
+Full conversation log
+context_window
+List[dict]
+memory_node
+Sliding window k=10 turns
+
+
+---PAGE BREAK---
+
+06 Node Specifications
+memory_node
+• Reads: question, messages, thread_id
+• Writes: messages (append), context_window (sliding window)
+• Logic: Append current question as HumanMessage. Trim messages to last k=10 pairs.
+• Key rule: MUST run first on every turn — no node bypasses memory.
+• Impl note: Use LangChain MemorySaver with thread_id as config key.
+planner_node
+• Reads: question, context_window
+• Writes: sub_queries (List[str]), route (str)
+• Logic: Prompt LLM with structured output parser to produce 3–5 sub-queries.
+• Route decision: 'retrieve' if KB-answerable, 'tool' if needs live data, 'both' otherwise.
+• Structured output: Use Pydantic PlanOutput(sub_queries: List[str], route: str).
+• This node is the PERS differentiator — do not skip or merge it.
+retrieve_node
+• Reads: sub_queries, route
+• Writes: retrieved (str), sources (List[str])
+• Logic: For each sub-query, query ChromaDB collection (top_k=5). Deduplicate. Concat.
+• Conditional: Only runs if route in ['retrieve', 'both'].
+• Embed model: sentence-transformers/all-MiniLM-L6-v2 (free, fast, local).
+tool_node
+• Reads: sub_queries, route
+• Writes: tool_result (str)
+• Logic: Run arXiv API tool + DuckDuckGo search on each sub-query. Merge results.
+• Conditional: Only runs if route in ['tool', 'both'].
+• Tools: ArxivQueryRun (langchain-community) + DuckDuckGoSearchRun.
+• Output format: Structured string with paper titles, authors, abstracts, URLs.
+
+
+---PAGE BREAK---
+
+answer_node
+• Reads: question, retrieved, tool_result, context_window, reflection_note
+• Writes: answer (str), report (dict)
+• Logic: Prompt LLM to synthesise from retrieved + tool_result only (no hallucination).
+• Output: Structured dict: {summary, key_findings: List, sources: List, follow_ups: List}
+• Grounding instruction: 'Only use information explicitly present in the provided context.'
+eval_node
+• Reads: answer, retrieved, tool_result, eval_retries
+• Writes: faithfulness (float), eval_retries (int)
+• Logic: Score = overlap of answer tokens with (retrieved + tool_result) context.
+• Simple impl: BM25 overlap OR LLM-as-judge with prompt 'Score faithfulness 0.0-1.0'.
+• Routing: faithfulness >= 0.7 → save_node; else eval_retries < 2 → reflect_node.
+reflect_node
+• Reads: answer, question, faithfulness, retrieved
+• Writes: reflection_note (str), answer (updated critique)
+• Logic: LLM critique prompt — identify unsupported claims, suggest grounded revision.
+• Output feeds back into answer_node for second-pass generation.
+• Loop guard: eval_retries incremented in eval_node. Max retries = 2.
+save_node
+• Reads: answer, report, sources, messages
+• Writes: messages (append AIMessage with report), context_window (update)
+• Logic: Persist final report as AIMessage. Update sliding window.
+• Also writes report to session state for Streamlit rendering.
+
+
+---PAGE BREAK---
+
+07 RAG Knowledge Base Design
+The ChromaDB knowledge base is the grounding foundation for ARIA. It must contain at least 10 domain-specific
+documents per the capstone requirement. ARIA targets the AI/ML + Deep Tech research domain.
+Source
+# Docs
+Content Type
+Load Method
+arXiv abstracts (LangGraph, RAG, RL)
+20
+Plain text abstracts
+ArxivLoader
+Attention Is All You Need
+1
+Full paper PDF
+PyPDFLoader
+LangChain / LangGraph official docs
+5
+Markdown pages
+WebBaseLoader
+Hugging Face model cards (top 10 models)
+10
+JSON → text
+Custom loader
+ARIA domain config (config.yaml)
+1
+YAML structured docs
+Custom parser
+Research summaries (NeurIPS 2024 top papers) 8
+PDF abstracts
+PyPDFLoader
+TOTAL
+45+
+Chunking Strategy
+# aria/knowledge_base.py
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=512,        # optimal for sentence-transformers
+    chunk_overlap=64,      # preserve boundary context
+    separators=['\n\n', '\n', '. ', ' ', '']
+)
+# Embed: sentence-transformers/all-MiniLM-L6-v2 (local, free)
+# Collection: persistent ChromaDB at ./chroma_db/
+# Metadata per chunk: {source, title, page, domain, date_ingested}
+
+
+---PAGE BREAK---
+
+08 Tool Registry
+Tool Name
+Type
+Library
+What It Does
+Req?
+arxiv_search
+External API
+langchain-community
+ArxivQueryRun
+Query arXiv by keyword; returns paper title, authors, abstract, PDF UR
+P0
+web_search
+Web Search
+langchain-community
+DuckDuckGoSearchRun
+Live web search for news, blogs, GitHub discussions on research top
+P0
+citation_formatterDomain Tool
+Custom (aria/tools/)
+Format a list of sources into APA/IEEE citation string
+P1
+domain_kb_query
+Vector Search
+ChromaDB + LangChain
+Semantic search over ChromaDB — wrapped as a @tool for LangGra
+P0
+date_context
+Utility
+Python datetime
+Return current date — grounds recency-sensitive research queries
+P1
+pdf_reader
+File Tool
+PyPDFLoader
+Accept user-uploaded PDF and add to session ChromaDB collection
+P2
+Tool Implementation Pattern
+# aria/tools/arxiv_tool.py
+from langchain_community.tools import ArxivQueryRun
+from langchain_community.utilities import ArxivAPIWrapper
+from langchain_core.tools import tool
+@tool
+def arxiv_search(query: str) -> str:
+    """Search arXiv for recent papers. Returns titles, authors, abstracts."""
+    wrapper = ArxivAPIWrapper(top_k_results=5, doc_content_chars_max=800)
+    return wrapper.run(query)
+@tool
+def citation_formatter(sources: list[str]) -> str:
+    """Format a list of source strings into numbered citation list."""
+    return '\n'.join(f'[{i+1}] {s}' for i, s in enumerate(sources))
+
+
+---PAGE BREAK---
+
+09 Self-Reflection & Faithfulness Gate
+The self-reflection loop is ARIA's quality assurance mechanism. It ensures every answer is grounded in retrieved
+context before delivery to the user — directly satisfying Mandatory Capability #4 from the capstone rubric.
+# aria/nodes/eval_node.py
+EVAL_PROMPT = '''
+You are a faithfulness evaluator. Given the ANSWER and the CONTEXT,
+score how well the answer is grounded in the context on a scale of 0.0 to 1.0.
+Rules:
+- 1.0 = every claim in the answer is directly supported by the context
+- 0.7 = most claims are supported; minor additions acceptable
+- 0.5 = significant unsupported claims present
+- 0.0 = answer is entirely unrelated to context (hallucination)
+Respond ONLY with a JSON: {"score": , "issues": []}
+'''
+def eval_node(state: ARIAState) -> ARIAState:
+    context = state['retrieved'] + '\n' + state['tool_result']
+    response = llm.invoke(EVAL_PROMPT.format(
+        answer=state['answer'], context=context[:3000]))
+    result = json.loads(response.content)
+    state['faithfulness'] = result['score']
+    state['eval_retries'] = state.get('eval_retries', 0)
+    return state
+def route_after_eval(state: ARIAState) -> str:
+    if state['faithfulness'] >= 0.7:
+        return 'save_node'
+    if state['eval_retries'] >= 2:
+        return 'save_node'   # force-pass with low-quality flag
+    return 'reflect_node'
+eval_node scores answer
+→
+score >= 0.7?
+→ YES →
+save_node
+↓ NO
+retries < 2?
+→ YES →
+reflect_node → answer_node
+↓ NO
+force save
+→
+save_node (flagged low quality)
+
+
+---PAGE BREAK---
+
+10 Conversation Memory Design
+# aria/nodes/memory_node.py
+from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.messages import HumanMessage, AIMessage
+WINDOW_SIZE = 10   # last 10 message pairs
+def memory_node(state: ARIAState) -> ARIAState:
+    # Append current turn
+    state['messages'].append({'role': 'user', 'content': state['question']})
+    # Sliding window — trim to last WINDOW_SIZE * 2 entries
+    all_msgs = state['messages']
+    state['context_window'] = all_msgs[-(WINDOW_SIZE * 2):]
+    return state
+# Graph invocation — thread_id isolates sessions
+config = {'configurable': {'thread_id': session_id}}
+result = graph.invoke({'question': user_input}, config=config)
+• MemorySaver is the checkpointer — it persists StateGraph state keyed by thread_id.
+• Each Streamlit session generates a unique thread_id (uuid4).
+• Sliding window ensures context window never exceeds LLM token limits.
+• The full messages list is retained for session export / citation history.
+• Multi-turn test: user asks 'Tell me about RL', then 'What did you say about reward shaping?' — agent must
+correctly reference prior turn.
+
+
+---PAGE BREAK---
+
+11 Streamlit Deployment
+The Streamlit UI is the public face of ARIA. A non-technical user must be able to run a full research session without
+touching any code — satisfying Mandatory Capability #6.
+Component
+Description
+Sidebar
+Session management — new session, session history, domain selector (AI/ML, Finance, Biotech)
+Chat input
+st.chat_input() — user types research question
+Thinking expander
+Collapsible st.expander showing planner sub-queries in real time
+Report card
+Structured card: Summary | Key Findings (bullets) | Sources (numbered) | Follow-up Qs
+Faithfulness badge
+Green/Amber/Red badge showing eval_node score for each answer
+Source explorer
+Expandable list of all cited documents with snippets
+Export button
+Download full session as structured Markdown / PDF report
+# aria/app.py — core Streamlit entry point
+import streamlit as st
+import uuid
+from aria.graph import build_graph
+st.set_page_config(page_title='ARIA — Research Intelligence', layout='wide')
+if 'thread_id' not in st.session_state:
+    st.session_state.thread_id = str(uuid.uuid4())
+if 'graph' not in st.session_state:
+    st.session_state.graph = build_graph()
+if prompt := st.chat_input('Ask a research question...'):
+    config = {'configurable': {'thread_id': st.session_state.thread_id}}
+    with st.spinner('ARIA is researching...'):
+        result = st.session_state.graph.invoke(
+            {'question': prompt, 'thread_id': st.session_state.thread_id,
+             'messages': [], 'eval_retries': 0},
+            config=config
+        )
+    render_report(result['report'], result['faithfulness'], result['sources'])
+
+
+---PAGE BREAK---
+
+12 Tech Stack & Dependencies
+Layer
+Technology
+Version
+Purpose
+Orchestration
+LangGraph
+>=0.2.0
+StateGraph, MemorySaver, conditional edges
+LLM
+google-generativeai / groq
+latest
+Gemini Flash (free) or Llama-3.3-70B via Groq
+Embeddings
+sentence-transformers
+>=2.6
+all-MiniLM-L6-v2 — local, no API key needed
+Vector DB
+chromadb
+>=0.5
+Persistent local collection
+Tools
+langchain-community
+>=0.2
+ArxivQueryRun, DuckDuckGoSearchRun
+Document Load
+langchain
+>=0.2
+PyPDFLoader, WebBaseLoader, ArxivLoader
+LLM Chains
+langchain-core
+>=0.2
+Prompts, parsers, structured output
+UI
+streamlit
+>=1.35
+Frontend — deployed to Streamlit Cloud
+Text Split
+langchain text-splitter>=0.2
+RecursiveCharacterTextSplitter
+Config
+python-dotenv + pyyaml latest
+API keys + domain config
+Type Safety
+pydantic
+>=2.0
+Structured outputs from planner_node
+Testing
+pytest + pytest-asynciolatest
+Unit tests for each node
+
+
+---PAGE BREAK---
+
+13 Mandatory Capability Compliance Matrix
+Every capstone must satisfy all 6 mandatory capabilities. The table below maps each requirement to ARIA's
+specific implementation.
+#
+Capability
+Requirement
+ARIA Implementation
+Status
+1
+LangGraph Workflow
+StateGraph with at least 3 nodes; no standalone llm.invoke(); State TypedDict designed upfront
+7-node StateGraph: memory → planner → retrieve/tool → answer → eval → 
+ PASS
+2
+RAG Knowledge Base ChromaDB with 10+ documents; every answer grounded in retrieved context
+45+ documents across 6 source types. retrieve_node always runs before ans
+ PASS
+3
+Conversation Memory MemorySaver + thread_id; multi-turn; sliding window; remembers 3+ turns
+MemorySaver checkpointer. thread_id per Streamlit session. Sliding window k
+ PASS
+4
+Self-Reflection
+At least one quality-checking node; eval node, review loop, or faithfulness gate
+eval_node scores faithfulness 0–1 using LLM-as-judge. reflect_node produce
+ PASS
+5
+Tool Use
+At least one tool beyond retrieval; web search, calculator, date, weather, or domain-specific
+3 tools: arxiv_search (domain-specific), web_search (DuckDuckGo), citation_
+ PASS
+6
+Deployment
+Working Streamlit UI or FastAPI endpoint; non-technical user can interact without notebooks
+Full Streamlit app with chat UI, report cards, source explorer, and export. Dep
+ PASS
+
+
+---PAGE BREAK---
+
+14 Implementation Roadmap
+Week 1: Foundation & State Design
+I Set up project structure, venv, requirements.txt
+I Design ARIAState TypedDict (all 15 fields)
+I Build ChromaDB knowledge base — ingest 20+ documents
+I Implement memory_node and basic graph skeleton
+I Write unit tests for state transitions
+I Deliverable: Graph runs end-to-end with stub nodes
+Week 2: Core Nodes: Planner + Retrieval
+I Implement planner_node with PlanOutput Pydantic model
+I Implement retrieve_node with ChromaDB semantic search
+I Implement answer_node with grounding-only prompt
+I Wire retrieve → answer in StateGraph
+I Test: multi-sub-query decomposition on 5 sample questions
+I Deliverable: RAG pipeline working end-to-end
+Week 3: Tools + Self-Reflection Loop
+I Implement tool_node: arXiv + DuckDuckGo
+I Implement eval_node with LLM-as-judge faithfulness scoring
+I Implement reflect_node with critique prompt
+I Wire conditional edges: eval → reflect → answer retry loop
+I Test: confirm reflection triggers on low-faithfulness answers
+I Deliverable: Full 7-node graph operational
+Week 4: Memory + Streamlit UI
+I Integrate MemorySaver with thread_id session isolation
+I Implement sliding window context trimming
+I Build Streamlit app: chat input, report cards, source explorer
+I Add faithfulness badge and follow-up question display
+I Multi-turn conversation testing (5+ turn sessions)
+I Deliverable: Fully deployed Streamlit app
+
+
+---PAGE BREAK---
+
+Week 5: Polish, Testing & Submission
+I Ingest remaining 25+ documents for full KB coverage
+I End-to-end integration tests across all 6 mandatory capabilities
+I Export feature: Markdown + PDF report download
+I Write README with demo GIF, architecture diagram, usage guide
+I Deploy to Streamlit Cloud, validate URL accessibility
+I Final review against compliance matrix — submit
+
+
+---PAGE BREAK---
+
+15 File Structure
+aria/
+III app.py                        # Streamlit entry point
+III requirements.txt              # All dependencies pinned
+III config.yaml                   # Domain + model config
+III .env.example                  # GROQ_API_KEY / GOOGLE_API_KEY
+I
+III aria/
+I   III __init__.py
+I   III state.py                  # ARIAState TypedDict
+I   III graph.py                  # build_graph() — StateGraph assembly
+I   III knowledge_base.py         # ChromaDB ingest + query
+I   I
+I   III nodes/
+I   I   III __init__.py
+I   I   III memory_node.py
+I   I   III planner_node.py
+I   I   III retrieve_node.py
+I   I   III tool_node.py
+I   I   III answer_node.py
+I   I   III eval_node.py
+I   I   III reflect_node.py
+I   I   III save_node.py
+I   I
+I   III tools/
+I   I   III __init__.py
+I   I   III arxiv_tool.py
+I   I   III web_search_tool.py
+I   I   III citation_formatter.py
+I   I
+I   III prompts/
+I       III planner_prompt.py
+I       III answer_prompt.py
+I       III eval_prompt.py
+I       III reflect_prompt.py
+I
+III data/
+I   III raw/                      # Source PDFs, markdown files
+I   III chroma_db/                # Persistent ChromaDB storage
+I
+III scripts/
+I   III ingest_kb.py              # One-time KB ingestion script
+I
+III tests/
+    III test_state.py
+    III test_nodes.py
+    III test_tools.py
+    III test_graph.py
+
+
+---PAGE BREAK---
+
+16 Risk Register
+Risk
+Likelihood
+Impact
+Mitigation
+LLM API rate limits hit during demo
+Medium
+High
+Use Groq free tier (generous limits) + cache responses in sess
+arXiv/DuckDuckGo tool returns empty resultsLow
+Medium
+Fallback to KB-only retrieval; tool_result defaults to empty strin
+Faithfulness loop runs infinitely
+Low
+High
+eval_retries cap at 2 — force-pass with low-quality flag display
+ChromaDB cold start slow on Streamlit CloudMedium
+Medium
+Pre-build and commit chroma_db/ to repo; skip runtime ingesti
+Context window overflow with long sessions Medium
+Medium
+Sliding window k=10 hard limit; test with 20-turn sessions befo
+Pydantic v1/v2 incompatibility with LangChainMedium
+Low
+Pin all versions in requirements.txt; use pydantic>=2.0 through
+ARIA — Technical PRD v1.0
+Soumyajit Ghosh · KIIT University ·
+April 2026
+Capstone: LangGraph Agentic AI
+
+
+---PAGE BREAK---
+

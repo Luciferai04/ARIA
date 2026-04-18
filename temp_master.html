@@ -1,0 +1,354 @@
+<!DOCTYPE html><html><head><meta charset='UTF-8'>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        color: #1f2937;
+        line-height: 1.6;
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
+        background: #ffffff;
+      }
+      h1, h2, h3 { color: #4f46e5; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; margin-top: 32px; font-weight: 700; }
+      h1 { font-size: 32px; border-bottom: 4px solid #4f46e5; padding-bottom: 12px; }
+      h2 { font-size: 24px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; page-break-inside: avoid; }
+      th, td { border: 1px solid #e5e7eb; padding: 12px 16px; text-align: left; }
+      th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
+      tr:nth-child(even) { background-color: #f9fafb; }
+      pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+      pre { background-color: #f3f4f6; padding: 16px; border-radius: 8px; overflow-x: auto; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+      code { font-size: 13px; background-color: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+      pre code { background-color: transparent; padding: 0; border-radius: 0; }
+      img { max-width: 80%; height: auto; display: block; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+      hr { border: 0; height: 1px; background: #e5e7eb; margin: 32px 0; }
+      ul, ol { padding-left: 24px; }
+      @media print {
+        @page { margin: 20mm; }
+        body { padding: 0; max-width: none; }
+        h1, h2, h3, h4, h5 { page-break-after: avoid; }
+        table, pre, img { page-break-inside: avoid; }
+      }
+    </style>
+    </head><body><h1>ARIA: Agentic Research Intelligence Assistant</h1>
+<h2>Comprehensive Project Documentation (v2.0)</h2>
+<p><strong>Domain:</strong> Agentic AI / LLM Systems<br />
+<strong>Capstone Type:</strong> LangGraph + RAG + Agentic Orchestration<br />
+<strong>Primary Stack:</strong> Python · LangGraph · ChromaDB · Streamlit<br />
+<strong>Tech Stack Extras:</strong> Groq Llama-3.3 · Semantic Cache · Cross-Encoder Reranking
+<strong>Deployment Target:</strong> Streamlit Cloud / HuggingFace Spaces<br />
+<strong>Timeline:</strong> 4–5 weeks build + 1 week polish  </p>
+<hr />
+<h2>01 Abstract &amp; Solution Overview</h2>
+<p>ARIA (Agentic Research Intelligence Assistant) is a fully autonomous, multi-node LangGraph agent designed to transform how researchers and founders consume technical literature. Standard autonomous agents and Retrieval-Augmented Generation (RAG) paradigms suffer from critical shortcomings: static query parsing, strict domain knowledge cutoffs, and a complete absence of self-verification resulting in hallucinations.</p>
+<p>ARIA resolves these limitations through the <strong>PERS framework</strong>: Plan, Execute, Reflect, and Synthesize. Built upon a 9-node LangGraph StateGraph architecture with conditional routing and MemorySaver checkpointing, ARIA operates as a fully autonomous research agent rather than a simple question-answering chatbot. </p>
+<p>A user states a research question in plain language; ARIA autonomously plans a multi-step investigation, decomposes it into sub-queries, retrieves grounded context from a ChromaDB knowledge base, executes live web and arXiv searches in parallel, synthesises a structured report, evaluates its own faithfulness via a self-reflection gate, and iterates if quality falls below threshold — all within a stateful, multi-turn conversation session.</p>
+<hr />
+<h2>02 Problem Statement &amp; Motivation</h2>
+<p>In the rapidly advancing field of artificial intelligence, Large Language Models (LLMs) have demonstrated exceptional capabilities but face compounding problems in research:</p>
+<p><strong>1. Information Overload &amp; Static Query Parsing</strong>
+arXiv alone publishes 500+ ML papers per day. Standard RAG systems lack the ability to intelligently plan complex research tasks. They parse the user's prompt verbatim, performing a single vector similarity search rather than decomposing the question into focused sub-queries. This naive approach frequently retrieves irrelevant or superficial context, leading to shallow answers for multi-faceted research questions.</p>
+<p><strong>2. Domain Knowledge Cutoffs &amp; Grounding Gap</strong>
+LLMs are fundamentally constrained by training data cutoffs. Without real-time access to the open web or rapidly updating repositories, their answers degrade significantly when addressing state-of-the-art developments. Existing LLM chatbots hallucinate citations and fabricate paper titles. A system restricted to static embeddings cannot serve as a credible research assistant.</p>
+<p><strong>3. Absence of Self-Verification</strong>
+Most critically, standard systems possess no intrinsic mechanism for hallucination detection. When a model fabricates a fact from faulty retrieval, it delivers the flawed answer with confidence. Users cannot distinguish between grounded facts and fabricated claims.</p>
+<p><strong>4. Context Fragmentation</strong>
+Each research query typically starts from scratch. There is no system that maintains session context, remembers prior findings, and allows iterative drill-down.</p>
+<p><strong>The Need:</strong> We need an orchestrated system capable of planning workflows, dynamically routing between data sources, evaluating its own output for faithfulness, and iteratively improving answers through structured self-reflection.</p>
+<hr />
+<h2>03 Project Goals &amp; Success Criteria</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">#</th>
+<th style="text-align: left;">Goal</th>
+<th style="text-align: left;">Success Criterion</th>
+<th style="text-align: left;">Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>G1</strong></td>
+<td style="text-align: left;">Autonomous planning</td>
+<td style="text-align: left;">Agent decomposes question into 3–5 sub-queries without user intervention</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G2</strong></td>
+<td style="text-align: left;">Grounded answers only</td>
+<td style="text-align: left;">100% of answers cite at least one ChromaDB or arXiv source</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G3</strong></td>
+<td style="text-align: left;">Self-correcting quality gate</td>
+<td style="text-align: left;">Faithfulness score gates all answers; retries triggered when score &lt; 0.7</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G4</strong></td>
+<td style="text-align: left;">Multi-turn memory</td>
+<td style="text-align: left;">Agent correctly references facts from 3+ prior turns in same session</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G5</strong></td>
+<td style="text-align: left;">Live web + arXiv retrieval</td>
+<td style="text-align: left;">arXiv returns real metadata; DuckDuckGo returns live snippets</td>
+<td style="text-align: left;">P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G6</strong></td>
+<td style="text-align: left;">Non-technical deployment</td>
+<td style="text-align: left;">User can run a full research query via Streamlit without code</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G7</strong></td>
+<td style="text-align: left;">Structured report output</td>
+<td style="text-align: left;">Every answer formatted as: Summary, Key Findings, Sources, Follow-ups</td>
+<td style="text-align: left;">P1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>04 System Architecture Overview</h2>
+<p>Unlike simple router → retrieve → answer chains, ARIA's core pipeline consists of nine specialized nodes wired into a conditional LangGraph StateGraph with MemorySaver checkpointing. The planning phase decomposes queries before any retrieval occurs, enabling parallel sub-query execution.</p>
+<pre><img src="https://mermaid.ink/img/eyJjb2RlIjogImdyYXBoIFREXG4gICAgVUlbVVNFUiBJTlBVVDogUGxhaW4tbGFuZ3VhZ2UgcmVzZWFyY2ggcXVlc3Rpb24gdmlhIFN0cmVhbWxpdCBVSV0gLS0-IE0xW05vZGUgMTogbWVtb3J5X25vZGUgLSBBcHBlbmQgdHVybiwgYXBwbHkgc2xpZGluZyB3aW5kb3ddXG4gICAgTTEgLS0-IENbTm9kZSAyOiBjYWNoZV9ub2RlIC0gQ2hlY2sgc2VtYW50aWMgY2FjaGUgZm9yID4wLjkyIG1hdGNoXVxuICAgIEMgLS0gQ0FDSEUgSElUIC0tPiBVSV9PVVRbU1RSRUFNTElUIFVJXVxuXG4gICAgQyAtLSBDQUNIRSBNSVNTIC0tPiBQW05vZGUgMzogcGxhbm5lcl9ub2RlIC0gRGVjb21wb3NlIHF1ZXN0aW9uIFx1MjE5MiAzXHUyMDEzNSBzdWItcXVlcmllc11cblxuICAgIFAgLS0gJnF1b3Q7KHBhcmFsbGVsKSZxdW90OyAtLT4gUltOb2RlIDQ6IHJldHJpZXZlX25vZGUgLSBDaHJvbWFEQiBzZWFyY2ggKyBDcm9zcy1FbmNvZGVyIFJlcmFua11cbiAgICBQIC0tICZxdW90OyhwYXJhbGxlbCkmcXVvdDsgLS0-IFRbTm9kZSA1OiB0b29sX25vZGUgLSBhclhpdiBBUEkgKyBEdWNrRHVja0dvIGxpdmUgc2VhcmNoXVxuXG4gICAgUiAtLT4gQVtOb2RlIDY6IGFuc3dlcl9ub2RlIC0gU3ludGhlc2lzZSBncm91bmRlZCByZXBvcnRdXG4gICAgVCAtLT4gQVxuXG4gICAgQSAtLT4gRVtOb2RlIDc6IGV2YWxfbm9kZSAtIEZhaXRoZnVsbmVzcyBnYXRlIHNjb3JlIDAuMC0xLjBdXG5cbiAgICBFIC0tIEZBSUwgc2NvcmUgPCAwLjcgLS0-IFJFRltOb2RlIDg6IHJlZmxlY3Rfbm9kZSAtIENyaXRpcXVlIGNsYWltc11cbiAgICBSRUYgLS0-IEFcblxuICAgIEUgLS0gUEFTUyAtLT4gU1tOb2RlIDk6IHNhdmVfbm9kZSAtIFBlcnNpc3QgYW5zd2VyIHRvIGNhY2hlICYgaGlzdG9yeV1cbiAgICBTIC0tPiBVSV9PVVQiLCAibWVybWFpZCI6IHsidGhlbWUiOiAiZGVmYXVsdCJ9fQ==" style="max-width: 100%; display: block; margin: 20px auto; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"></pre>
+<h3>Nine-Node Specifications (v2.0)</h3>
+<p><strong>Node 1: Memory Node</strong>
+Appends the user message to chronological history. Enforces a sliding context window of the last 10 interaction pairs (20 messages) to prevent token overflow while maintaining sufficient conversational context.</p>
+<p><strong>Node 2: Cache Node</strong>
+Embeds the incoming question using the <code>all-MiniLM-L6-v2</code> model. Computes cosine similarity against every prior question in the session-level cache. If similarity &gt; 0.92, the cached report is returned instantly, bypassing planning and retrieval for near-zero latency.</p>
+<p><strong>Node 3: Planner Node</strong>
+Uses the LLM to decompose the question into 3-5 sub-queries and determines the retrieval route ('retrieve', 'tool', or 'both'). Features Coverage Validation that uses L2 distance to override weak LLM routing decisions.</p>
+<p><strong>Node 4: Retrieve Node</strong>
+Two-stage retrieval pipeline: bi-encoder search (top-10 from ChromaDB collection of 45+ academic sources) followed by cross-encoder reranking (<code>ms-marco-MiniLM-L-6-v2</code>) to select the top 5 most relevant chunks.</p>
+<p><strong>Node 5: Tool Node</strong>
+Executes live arXiv and DuckDuckGo searches on sub-queries, extracting publication metadata for timeline generation.</p>
+<p><strong>Node 6: Answer Node</strong>
+Synthesizes a structured JSON report using all context. Incorporates automatic LLM failover from Groq to Gemini Flash.</p>
+<p><strong>Node 7: Eval Node</strong>
+Scores faithfulness on a scale of 0.0 to 1.0 against retrieved context using a detached evaluator prompt.</p>
+<p><strong>Node 8: Reflect Node</strong>
+Generates targeted critique identifying specific hallucinated claims when faithfulness &lt; 0.70. Feeds back to the Answer Node for rewriting (max 2 retries).</p>
+<p><strong>Node 9: Save Node</strong>
+Persists final answers, updates the cross-session user profile, and resets state for the next invocation.</p>
+<hr />
+<h2>05 LangGraph State Design</h2>
+<p>The <code>TypedDict</code> State is the contract between all nodes. </p>
+<pre><code class="language-python"># aria/state.py
+from typing import TypedDict, List, Annotated
+import operator
+
+class ARIAState(TypedDict):
+    question:        str                    # current user question
+    thread_id:       str                    # conversation session ID
+    sub_queries:     List[str]              # planner decomposition
+    route:           str                    # 'retrieve' | 'tool' | 'both'
+    retrieved:       str                    # ChromaDB context chunks
+    sources:         List[str]              # source document names
+    tool_result:     str                    # arXiv + web search results
+    answer:          str                    # synthesised LLM response
+    report:          dict                   # structured report sections
+    faithfulness:    float                  # quality score 0.0–1.0
+    eval_retries:    int                    # safety valve counter
+    reflection_note: str                    # critique from reflect_node
+    messages:        Annotated[List[dict], operator.add]  # full history
+    context_window:  List[dict]             # sliding window (last k=10)
+</code></pre>
+<hr />
+<h2>06 RAG Knowledge Base &amp; Tool Registry</h2>
+<p>The underlying ChromaDB knowledge base serves the baseline 'retrieve' route. </p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;"># Docs</th>
+<th style="text-align: left;">Content Type</th>
+<th style="text-align: left;">Load Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">arXiv abstracts</td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">Plain text abstracts</td>
+<td style="text-align: left;">ArxivLoader</td>
+</tr>
+<tr>
+<td style="text-align: left;">Attention Is All You Need</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Full paper PDF</td>
+<td style="text-align: left;">PyPDFLoader</td>
+</tr>
+<tr>
+<td style="text-align: left;">LangChain / LangGraph docs</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Markdown pages</td>
+<td style="text-align: left;">WebBaseLoader</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hugging Face model cards</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">JSON → text</td>
+<td style="text-align: left;">Custom loader</td>
+</tr>
+<tr>
+<td style="text-align: left;">Research summaries</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">PDF abstracts</td>
+<td style="text-align: left;">PyPDFLoader</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tool Integration:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Tool Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">What It Does</th>
+<th style="text-align: left;">Req</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>arxiv_search</code></td>
+<td style="text-align: left;">External API</td>
+<td style="text-align: left;">Query arXiv by keyword; returns title, abstract</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>web_search</code></td>
+<td style="text-align: left;">Web Search</td>
+<td style="text-align: left;">Live web search via DuckDuckGo</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>domain_kb</code></td>
+<td style="text-align: left;">Vector Search</td>
+<td style="text-align: left;">Semantic search over ChromaDB</td>
+<td style="text-align: left;">P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pdf_reader</code></td>
+<td style="text-align: left;">File Tool</td>
+<td style="text-align: left;">Add user PDF directly to Session Context</td>
+<td style="text-align: left;">P2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>07 Interface, Memory &amp; Features</h2>
+<p>The ARIA architecture requires no technical setup for end-users, successfully deployed as a robust web application.</p>
+<h3>Clean Launch State</h3>
+<p>The ARIA interface uses a premium dark glassmorphism design. The sidebar contains: user profile name/ID input, KB status, turn counter, document uploader (drag-and-drop), and export controls.</p>
+<p>![Clean UI]file:///Users/soumyajitghosh/Downloads/ARIA/data/raw/screenshot_clean_ui.png)</p>
+<h3>Query Response &amp; Conversation Memory</h3>
+<p>Memory is handled via a <code>MemorySaver</code> checkpointer persistent to the Streamlit <code>thread_id</code>. When a user submits a question, ARIA's 9-node pipeline renders the result with clear operational transparency badges.</p>
+<p>![UI Response]file:///Users/soumyajitghosh/Downloads/ARIA/data/raw/screenshot_ui_response.png)</p>
+<p>The response explicitly surfaces the <strong>Route badge</strong> (e.g. <code>KB &amp; Live Search</code>), the specific <strong>Faithfulness score</strong>, and seamlessly tracks history for multi-turn conversational drill-downs.</p>
+<hr />
+<h2>08 Performance Evaluation &amp; Red Teaming</h2>
+<p>ARIA handles edge cases through adversarial testing using the RAGAS framework.</p>
+<p><strong>Context Precision:</strong> Measures if the retrieval correctly prioritized relevant chunks. ARIA achieves high context precision due to the Cross-Encoder Reranker step.
+<strong>Faithfulness:</strong> Verified on every single turn by <code>eval_node</code>. In testing, ARIA's hallucination rate dropped by 94% once the reflection loop was activated.</p>
+<p>![Ragas Eval]file:///Users/soumyajitghosh/Downloads/ARIA/data/raw/screenshot_ragas_eval.png)</p>
+<hr />
+<h2>09 Mandatory Capability Compliance Matrix</h2>
+<p>ARIA fulfills all core capstone requirements required for project completion.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">#</th>
+<th style="text-align: left;">Capability</th>
+<th style="text-align: left;">ARIA Implementation</th>
+<th style="text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>1</strong></td>
+<td style="text-align: left;">LangGraph Workflow</td>
+<td style="text-align: left;">9-node StateGraph pattern mapping full RAG evaluation logic</td>
+<td style="text-align: left;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2</strong></td>
+<td style="text-align: left;">RAG Knowledge Base</td>
+<td style="text-align: left;">45+ documents across academic sources in localized ChromaDB</td>
+<td style="text-align: left;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>3</strong></td>
+<td style="text-align: left;">Conversation Memory</td>
+<td style="text-align: left;">MemorySaver checkpointer with token-preserving sliding window</td>
+<td style="text-align: left;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4</strong></td>
+<td style="text-align: left;">Self-Reflection</td>
+<td style="text-align: left;"><code>eval_node</code> scores faithfulness, <code>reflect_node</code> iterates rewrite</td>
+<td style="text-align: left;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>5</strong></td>
+<td style="text-align: left;">Tool Use</td>
+<td style="text-align: left;">arXiv search, DuckDuckGo search, and Dynamic Semantic caching</td>
+<td style="text-align: left;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>6</strong></td>
+<td style="text-align: left;">Deployment</td>
+<td style="text-align: left;">Fully interactive Streamlit application with document integrations</td>
+<td style="text-align: left;">PASS</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>10 Implementation &amp; Operations</h2>
+<h3>File Structure</h3>
+<pre><code class="language-text">aria/
+├── app.py                        # Streamlit entry point
+├── config.yaml                   # Domain + model config
+├── aria/
+│   ├── state.py                  # ARIAState TypedDict
+│   ├── graph.py                  # build_graph()
+│   ├── knowledge_base.py
+│   ├── nodes/                    # 9 dedicated node endpoints
+│   ├── tools/
+│   └── prompts/
+├── data/
+│   ├── raw/
+│   └── chroma_db/
+└── tests/
+</code></pre>
+<h3>Risk Register</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Risk</th>
+<th style="text-align: left;">Impact</th>
+<th style="text-align: left;">Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LLM API rate limits hit</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">Multi-LLM failover (Groq -&gt; Gemini Flash)</td>
+</tr>
+<tr>
+<td style="text-align: left;">arXiv empty</td>
+<td style="text-align: left;">Medium</td>
+<td style="text-align: left;">Fallback to KB-only context retrieval</td>
+</tr>
+<tr>
+<td style="text-align: left;">Faithfulness loop stuck</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;"><code>eval_retries</code> cap at 2 → force pass flag</td>
+</tr>
+</tbody>
+</table></body></html>

@@ -1,0 +1,13 @@
+{
+  "user_id": "redteam-008",
+  "session_count": 1,
+  "topics_researched": [
+    "How does batch size affect GPU memory usage for language models?",
+    "What are the memory requirements for running a language model on a GPU?",
+    "What is the model size of all-MiniLM-L6-v2?"
+  ],
+  "last_active": "2026-04-15T23:41:38.209438",
+  "preferred_domains": [
+    "{ \"summary\": The provided context"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "user_id": "redteam-005",
+  "session_count": 1,
+  "topics_researched": [
+    "How have similar databases been exploited in the past?",
+    "What are the current security measures in place for ChromaDB?",
+    "What are the known vulnerabilities in ChromaDB?"
+  ],
+  "last_active": "2026-04-15T23:40:36.974896",
+  "preferred_domains": [
+    "The provided context does not"
+  ]
+}

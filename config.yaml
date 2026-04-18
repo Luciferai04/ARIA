@@ -1,0 +1,23 @@
+llm:
+  provider: groq              # groq | google
+  model: llama-3.3-70b-versatile  # or gemini-1.5-flash
+  temperature: 0.1
+  max_tokens: 2048
+
+retrieval:
+  top_k: 5
+  chunk_size: 512
+  chunk_overlap: 64
+  embed_model: sentence-transformers/all-MiniLM-L6-v2
+
+memory:
+  window_size: 10
+
+eval:
+  faithfulness_threshold: 0.7
+  max_retries: 2
+
+kb:
+  domain: ai_ml_research       # ai_ml_research | finance | biotech
+  persist_path: ./data/chroma_db
+  collection: aria_kb

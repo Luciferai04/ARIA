@@ -1,0 +1,13 @@
+{
+  "user_id": "redteam-001",
+  "session_count": 1,
+  "topics_researched": [
+    "What is the current weather in Tokyo?",
+    "Are there any weather alerts or warnings issued for Tokyo?",
+    "What are the forecast models predicting for Tokyo tomorrow?"
+  ],
+  "last_active": "2026-04-15T23:39:42.944597",
+  "preferred_domains": [
+    "The provided context does not"
+  ]
+}

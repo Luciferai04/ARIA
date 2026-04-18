@@ -1,0 +1,25 @@
+{
+  "name": "aria-assistant",
+  "version": "1.0.0",
+  "description": "Agentic Research Intelligence Assistant - 9-Node LangGraph Pipeline",
+  "main": "app.py",
+  "bin": {
+    "aria": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node ./bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soumyajitghosh/ARIA.git"
+  },
+  "keywords": [
+    "ai",
+    "agentic",
+    "langgraph",
+    "rag",
+    "streamlit"
+  ],
+  "author": "Soumyajit Ghosh",
+  "license": "ISC"
+}

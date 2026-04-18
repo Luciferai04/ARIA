@@ -1,0 +1,132 @@
+{
+  "timestamp": "2026-04-16T01:17:41.556668",
+  "total_questions": 10,
+  "averages": {
+    "faithfulness": 0.0,
+    "answer_relevancy": 0.1105,
+    "context_precision": 0.0,
+    "context_recall": 0.173
+  },
+  "per_question": [
+    {
+      "question": "What is self-attention in transformer architectures and how does it work?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99117, Requested 2355. Please try again in 21m11.808s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "Self-attention is a mechanism that computes attention weights between all positions in a sequence simultaneously. Each token generates query, key, and value vectors. Attention scores are computed as the dot product of queries and keys, scaled by the square root of the dimension, then softmaxed and used to weight the values.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.2273,
+      "precision": 0.0,
+      "recall": 0.2093
+    },
+    {
+      "question": "Explain the RAG (Retrieval-Augmented Generation) architecture and its key components.",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99117, Requested 2427. Please try again in 22m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "RAG combines a retriever component (typically a bi-encoder with a vector database like FAISS or ChromaDB) with a generator (LLM). The retriever finds relevant documents for a query, and these documents are inserted into the LLM's context to ground the generation in factual information, reducing hallucination.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.0,
+      "precision": 0.0,
+      "recall": 0.2432
+    },
+    {
+      "question": "What is LangGraph and how does it differ from LangChain?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99117, Requested 2505. Please try again in 23m21.408s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "LangGraph is a library for building stateful, multi-actor applications with LLMs, built on top of LangChain. Unlike LangChain's sequential chains, LangGraph uses a graph-based architecture with nodes and conditional edges, supporting cycles and complex control flow like reflection loops.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.0,
+      "precision": 0.0,
+      "recall": 0.1714
+    },
+    {
+      "question": "What are the most recent arXiv papers on retrieval-augmented generation from 2024?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99117, Requested 2518. Please try again in 23m32.64s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "Recent 2024 papers on RAG include works on advanced RAG architectures, self-RAG, corrective RAG (CRAG), and RAG evaluation frameworks. These papers address limitations of naive RAG through query decomposition, iterative retrieval, and faithfulness verification.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.2083,
+      "precision": 0.0,
+      "recall": 0.1111
+    },
+    {
+      "question": "What is the latest research on LLM reasoning and chain-of-thought prompting?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99117, Requested 2516. Please try again in 23m30.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "Recent research on LLM reasoning includes chain-of-thought prompting, tree-of-thought, self-consistency decoding, and reasoning via planning. Key advances include improved mathematical reasoning, code generation through structured reasoning, and multi-step problem decomposition.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.2273,
+      "precision": 0.0,
+      "recall": 0.1111
+    },
+    {
+      "question": "What are the current state-of-the-art approaches to reducing LLM hallucination?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99116, Requested 2518. Please try again in 23m31.776s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "State-of-the-art hallucination reduction approaches include RAG with faithfulness scoring, self-reflection loops, RLHF fine-tuning, constrained decoding, and factual consistency checking. Recent work focuses on detecting and correcting hallucinations post-generation.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.25,
+      "precision": 0.0,
+      "recall": 0.1111
+    },
+    {
+      "question": "Based on the transformer attention mechanism, how does multi-head attention improve upon single-head attention?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99116, Requested 2520. Please try again in 23m33.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "Multi-head attention runs several attention operations in parallel, each with different learned projections. This allows the model to jointly attend to information from different representation subspaces at different positions, capturing diverse types of relationships that a single head would miss.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.1923,
+      "precision": 0.0,
+      "recall": 0.3333
+    },
+    {
+      "question": "Given what we know about RAG, what are the main failure modes and how can reranking address them?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99116, Requested 2532. Please try again in 23m43.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "RAG failure modes include: retrieving irrelevant chunks (precision failure), missing relevant chunks (recall failure), and the LLM ignoring retrieved context. Cross-encoder reranking addresses precision failures by rescoring bi-encoder results with a more accurate model, promoting truly relevant chunks.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0857
+    },
+    {
+      "question": "What is the current stock price of Apple Inc?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99116, Requested 2516. Please try again in 23m30.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "This question is out of scope for a research assistant focused on AI/ML topics. The system should indicate it cannot provide real-time financial data.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.0,
+      "precision": 0.0,
+      "recall": 0.25
+    },
+    {
+      "question": "Since GPT-4 has 1.7 trillion parameters as confirmed by OpenAI, how does this affect inference costs?",
+      "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99116, Requested 2542. Please try again in 23m52.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "contexts": [],
+      "ground_truth": "The premise is false - OpenAI has not officially confirmed GPT-4's parameter count. The 1.7 trillion figure is an unconfirmed rumor. The system should flag this uncertainty rather than treating the premise as fact.",
+      "faithfulness_internal": 0.0,
+      "route": "error",
+      "faithfulness": 0.0,
+      "relevancy": 0.0,
+      "precision": 0.0,
+      "recall": 0.1034
+    }
+  ]
+}

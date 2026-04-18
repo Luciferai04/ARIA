@@ -1,0 +1,261 @@
+{
+  "timestamp": "2026-04-18T08:24:56.339373",
+  "total_turns": 19,
+  "total_passed": 0,
+  "overall_score": "0/19",
+  "decay_metrics": {
+    "2": {
+      "pass_rate": 0.0,
+      "avg_size": 565.0
+    },
+    "3": {
+      "pass_rate": 0.0,
+      "avg_size": 1093.0
+    }
+  },
+  "threads": [
+    {
+      "thread_name": "Concept Drill-Down",
+      "thread_id": "memory-test-drilldown",
+      "passed": 0,
+      "total": 5,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "What is self-attention in transformers?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 11086, Requested 2291. Please try again in 6.885s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Should explain self-attention mechanism with Q/K/V.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 11086, Requested 2291. Please try again in 6.885s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 2,
+          "question": "What is the computational complexity of what you just explained?",
+          "answer": "The computational complexity of the explained mechanism is not directly provided in the context, but it is mentioned that the time and space complexity of self-attention grows quadratically in the sequence length. The context does provide information on the complexity of self-attention, stating it grows quadratically with sequence length. However, specific computational complexity details for the explained mechanism are not available in the provided context.",
+          "requires_context": true,
+          "context_check": "Must reference self-attention and state O(n^2) complexity.",
+          "verdict": "FAIL",
+          "reason": "The AI's answer does not directly state the computational complexity of self-attention as O(n^2) despite having the necessary context from the previous turn.",
+          "faithfulness": 0.7,
+          "route": "retrieve",
+          "context_size_chars": 565
+        },
+        {
+          "turn": 3,
+          "question": "How does that compare to RNN complexity?",
+          "answer": "The comparison between self-attention and RNN complexity is limited due to the lack of specific information on the quadratic complexity of self-attention in the provided context. However, it is known that the computational complexity of RNNs is generally high due to their sequential nature. The context does not provide a direct comparison of the two, but it highlights the importance of understanding the complexities of both self-attention and RNNs in the context of sequence modeling.",
+          "requires_context": true,
+          "context_check": "Must compare transformer O(n^2) vs RNN O(n) sequential complexity.",
+          "verdict": "FAIL",
+          "reason": "The AI's answer does not correctly reference the prior conversation context, specifically the quadratic complexity of self-attention, to compare it with RNN complexity.",
+          "faithfulness": 0.7,
+          "route": "retrieve",
+          "context_size_chars": 1093
+        },
+        {
+          "turn": 4,
+          "question": "Given the tradeoffs we discussed, which is better for long sequences?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 10336, Requested 2301. Please try again in 3.185s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must reference both architectures discussed and give a reasoned recommendation.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Used 10336, Requested 2301. Please try again in 3.185s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 5,
+          "question": "Summarise everything we covered in this conversation in 3 bullet points",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98772, Requested 2592. Please try again in 19m38.495999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must summarize: self-attention, complexity comparison, and recommendation for long sequences.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98772, Requested 2592. Please try again in 19m38.495999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        }
+      ]
+    },
+    {
+      "thread_name": "Research Session",
+      "thread_id": "memory-test-research",
+      "passed": 0,
+      "total": 5,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "Tell me about RAG architectures",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99112, Requested 1064. Please try again in 2m32.064s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Should explain retrieval-augmented generation architecture.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99112, Requested 1064. Please try again in 2m32.064s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 2,
+          "question": "What are the main failure modes of what you described?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99461, Requested 1065. Please try again in 7m34.464s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must reference RAG specifically and describe its failure modes.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99461, Requested 1065. Please try again in 7m34.464s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 3,
+          "question": "How does the reranking approach address those failures?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 536. Please try again in 4m19.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must connect reranking to the RAG failure modes just discussed.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 536. Please try again in 4m19.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 4,
+          "question": "Are there any papers on this from 2024?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 579. Please try again in 4m56.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must reference RAG/reranking topic and attempt to find recent papers.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 579. Please try again in 4m56.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 5,
+          "question": "Based on our discussion, what should I implement first in my own RAG system?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 604. Please try again in 5m17.952s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must synthesize the full conversation: RAG, failure modes, reranking, papers into actionable advice.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 604. Please try again in 5m17.952s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        }
+      ]
+    },
+    {
+      "thread_name": "Comparison Thread",
+      "thread_id": "memory-test-comparison",
+      "passed": 0,
+      "total": 5,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "Explain LangGraph",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 502. Please try again in 3m49.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Should explain LangGraph as a graph-based agent orchestration framework.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 502. Please try again in 3m49.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 2,
+          "question": "Now explain LlamaIndex",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 541. Please try again in 4m23.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Should explain LlamaIndex as a data framework for LLM applications.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 541. Please try again in 4m23.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 3,
+          "question": "What are the key differences between the two systems you explained?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 532. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must reference BOTH LangGraph and LlamaIndex from prior turns and compare them.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 532. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 4,
+          "question": "Which would you recommend for a student capstone project and why?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 548. Please try again in 4m29.567999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must reference the comparison just made and give a reasoned recommendation.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 548. Please try again in 4m29.567999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 5,
+          "question": "What did you recommend and why - test if you remember",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 561. Please try again in 4m40.8s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "Must recall the specific recommendation from the previous turn and restate it.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 561. Please try again in 4m40.8s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        }
+      ]
+    },
+    {
+      "thread_name": "Entity Tracking (Needle)",
+      "thread_id": "memory-test-entity",
+      "passed": 0,
+      "total": 4,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "I am working on a new framework called 'QuantumGraph-RAG-v7.2'. Just remember this name, we will need it later.",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 574. Please try again in 4m52.032s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Acknowledge the name QuantumGraph-RAG-v7.2.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 574. Please try again in 4m52.032s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 2,
+          "question": "What are the common graph databases?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 569. Please try again in 4m47.712s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Provide standard graph database info (Neo4j, etc).",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 569. Please try again in 4m47.712s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 3,
+          "question": "How do you extract entities from text?",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 551. Please try again in 4m32.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": false,
+          "context_check": "Explain NER or LLM extraction.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 551. Please try again in 4m32.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        },
+        {
+          "turn": 4,
+          "question": "What was the exact name of the framework I mentioned at the start of this conversation? Give me the exact string.",
+          "answer": "ERROR: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 620. Please try again in 5m30.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "requires_context": true,
+          "context_check": "MUST output EXACT string: QuantumGraph-RAG-v7.2 without hallucinating.",
+          "verdict": "FAIL",
+          "reason": "Execution error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jsq3x722e21r54gg60jpstwf` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 620. Please try again in 5m30.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+          "faithfulness": 0.0,
+          "route": "error"
+        }
+      ]
+    }
+  ]
+}

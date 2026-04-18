@@ -1,0 +1,17 @@
+{
+  "user_id": "ragas-eval-001",
+  "session_count": 2,
+  "topics_researched": [
+    "What is the definition of self-attention in transformer architectures?",
+    "How does self-attention work in the context of sequence-to-sequence models?",
+    "What are the key components of the RAG architecture?",
+    "How does the RAG architecture integrate retrieval and generation capabilities?",
+    "What are the key benefits and limitations of self-attention mechanisms?",
+    "What is the Retrieval-Augmented Generation (RAG) architecture?"
+  ],
+  "last_active": "2026-04-16T00:07:50.697352",
+  "preferred_domains": [
+    "Self-attention in transformer architectu",
+    "{ \"summary\": The RAG (Retrieval-Augmente"
+  ]
+}
